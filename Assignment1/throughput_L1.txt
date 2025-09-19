@@ -1,0 +1,7 @@
+CLIENT:
+Interval       		Transfer     	Bandwidth
+0.0000-24.2772 sec  	54.5 MBytes  	18.8 Mbits/sec
+
+SERVER:
+Interval       		Transfer     	Bandwidth
+0.0000-24.1814 sec  	54.5 MBytes  	18.9 Mbits/sec
