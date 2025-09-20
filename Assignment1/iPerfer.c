@@ -7,7 +7,7 @@
 #include <netdb.h>
 #include <time.h>
 
-#define CHUNK_SIZE 1000
+#define CHUNK_SIZE 100000
 
 // Usage:
 // ./iPerfer -s -p <listen_port>
@@ -57,6 +57,7 @@ int main(int argc, char** argv) {
       hints.ai_flags = AI_PASSIVE;
       getaddrinfo(NULL, listen_port, &hints, &serverAddrInfo);
       bind(s, serverAddrInfo->ai_addr, serverAddrInfo->ai_addrlen);
+      freeaddrinfo(serverAddrInfo);
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
       printf("connection accepted\n");
@@ -111,6 +112,7 @@ int main(int argc, char** argv) {
       hints.ai_flags = 0;
       getaddrinfo(server_hostname, server_port, &hints, &serverAddrInfo);
       connect(s, serverAddrInfo->ai_addr, serverAddrInfo-> ai_addrlen);
+      freeaddrinfo(serverAddrInfo);
 
       //timeout
       time_t client_start_time = time(NULL);
@@ -122,7 +124,7 @@ int main(int argc, char** argv) {
       while(client_end_time > time(NULL)){
         int bytes_sent = send(s,send_chunk,CHUNK_SIZE,0);
         if (bytes_sent > 0) {
-          sent_kb++;
+          sent_kb+=100;
         }
       }
 
@@ -142,7 +144,7 @@ int main(int argc, char** argv) {
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
 
-      double bandwidth_mbps = (sent_kb * 8.0) / (elapsed_time * 1000.0);
+      double bandwidth_mbps = (sent_kb/1000) / (elapsed_time);
       printf("Sent=%d KB, Rate=%.3f Mbps\n", sent_kb, bandwidth_mbps);
     }
 }
