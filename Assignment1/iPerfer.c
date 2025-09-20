@@ -15,11 +15,9 @@
 
 int main(int argc, char** argv) {
   int s, new_s;
-  char mode;
-  char *hostname;
   struct sockaddr_storage their_addr;
   socklen_t addr_len = sizeof their_addr;
-  int port, t;
+  int t;
   struct addrinfo hints, *serverAddrInfo;
 
 
