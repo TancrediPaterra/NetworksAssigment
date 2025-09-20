@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
       server_end_time = time(NULL);
       send(new_s, ack_chunk, CHUNK_SIZE, 0);
       printf("ACK send\n");
-      recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close first
+      // recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close first
       close(new_s);
 
       double elapsed_time = difftime(server_end_time, server_start_time);
