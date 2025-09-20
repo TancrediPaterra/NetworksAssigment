@@ -7,7 +7,7 @@
 #include <netdb.h>
 #include <time.h>
 
-#define CHUNK_SIZE 100000
+#define CHUNK_SIZE 1000
 
 // Usage:
 // ./iPerfer -s -p <listen_port>
