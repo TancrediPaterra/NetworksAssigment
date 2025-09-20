@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
       server_start_time = time(NULL);
-      // printf("connection accepted\n");
+      printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
       int total_bytes_received = 0;
       char buff[CHUNK_SIZE];
