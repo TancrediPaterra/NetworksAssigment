@@ -123,11 +123,11 @@ int main(int argc, char** argv) {
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
 
-      int sent_kb=0;
+      int kb_sent=0;
       while(client_end_time > time(NULL)){
         int bytes_sent = send(s,send_chunk,CHUNK_SIZE,0);
         if (bytes_sent > 0) {
-          sent_kb++;
+          kb_sent++;
         }
         else break;
       }
