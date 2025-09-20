@@ -126,6 +126,7 @@ int main(int argc, char** argv) {
         if (bytes_sent > 0) {
           sent_kb++;
         }
+        else break;
       }
 
       // Send close chunk to signal end of transmission
@@ -136,6 +137,7 @@ int main(int argc, char** argv) {
       int ack_received = 0;
       while(!ack_received){
         int received = recv(s,buff,CHUNK_SIZE,0);
+        printf("Messaggio ricevuto da client\n");
         if (received > 0 && memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
           ack_received = 1;
           printf("ACK received\n");
