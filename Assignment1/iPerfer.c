@@ -67,12 +67,14 @@ int main(int argc, char** argv) {
       int kb_received = 0;
       char *buff;
       server_start_time = time(NULL);
+
       while(1){
         int received = recv(new_s, buff,CHUNK_SIZE, 0 );
         if (received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
           break; //FIN message
         }
+        printf("Received 1 chunk\n");
         kb_received++;
       }
       server_end_time = time(NULL);
@@ -119,6 +121,7 @@ int main(int argc, char** argv) {
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
 
+      printf("Client started sending\n");
       int sent_kb=0;
       while(client_end_time>=time(NULL)){
         send(s,send_chunk,CHUNK_SIZE,0);
