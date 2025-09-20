@@ -86,8 +86,8 @@ int main(int argc, char** argv) {
 
       double elapsed_time = difftime(server_end_time, server_start_time);
       printf("Received=%d KB, ",kb_received);
-      double mb_received = kb_received/1000;
-      double bandwidth_mbps = mb_received/elapsed_time;
+      double mbits_received = kb_received/1000*8;
+      double bandwidth_mbps = mbits_received/elapsed_time;
       printf("Rate=%.3f Mbps\n",bandwidth_mbps);
       //c'è un errore tra le due misurazioni
   }
@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
       close(s);
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
-      double mb_sent = sent_kb/1000;
-      double bandwidth_mbps = mb_sent/elapsed_time;
+      double mbits_sent = kb_sent/1000*8;
+      double bandwidth_mbps = mbits_sent/elapsed_time;
 
       printf("Sent=%d KB, Rate=%.3f Mbps\n", sent_kb, bandwidth_mbps);
     }
