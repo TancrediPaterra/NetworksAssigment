@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
       int mb_received = kb_received/1000;
       double bandwidth_mbps = mb_received/elapsed_time;
       //TODO format with 3 decimal points
-      printf("Rate=%f Mbps\n",bandwidth_mbps );
+      printf("Rate=%.3f Mbps\n",bandwidth_mbps );
   }
 
     // CLIENT MODE
@@ -138,6 +138,7 @@ int main(int argc, char** argv) {
         int received = recv(s,buff,CHUNK_SIZE,0);
         if (received > 0 && memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
           ack_received = 1;
+          printf("ACK received");
         }
       }
       close(s);
