@@ -123,9 +123,12 @@ int main(int argc, char** argv) {
 
       printf("Client started sending\n");
       int sent_kb=0;
-      while(client_end_time>=time(NULL)){
-        send(s,send_chunk,CHUNK_SIZE,0);
-        sent_kb++;
+      while(client_end_time > time(NULL)){
+        printf("Client send one chunk\n");
+        int bytes_sent = send(s,send_chunk,CHUNK_SIZE,0);
+        if (bytes_sent > 0) {
+          sent_kb++;
+        }
       }
 
       char* buff;
@@ -136,8 +139,10 @@ int main(int argc, char** argv) {
           break;
         }
       }
-      time_t elapsed_time = client_start_time - time(NULL);
+      time_t client_final_time = time(NULL);
+      time_t elapsed_time = client_final_time - client_start_time;
 
-      printf("Sent=%d KB, Rate=%ld Mbps\n", sent_kb, sent_kb*1000/elapsed_time);
+      double bandwidth_mbps = (sent_kb * 8.0) / (elapsed_time * 1000.0);
+      printf("Sent=%d KB, Rate=%.3f Mbps\n", sent_kb, bandwidth_mbps);
     }
 }
