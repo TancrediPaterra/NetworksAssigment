@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
         int received = recv(new_s, buff,CHUNK_SIZE, 0 );
         if (received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
+          printf("Close chunk received\n");
           break; //FIN message
         }
 
@@ -125,14 +126,19 @@ int main(int argc, char** argv) {
         }
       }
 
+      // Send close chunk to signal end of transmission
+      send(s, close_chunk, CHUNK_SIZE, 0);
+      printf("Close chunk sent\n");
+
       char buff[CHUNK_SIZE];
-      while(1){
-        recv(s,buff,CHUNK_SIZE,0);
-        if (memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
-          close(s);
-          break;
+      int ack_received = 0;
+      while(!ack_received){
+        int received = recv(s,buff,CHUNK_SIZE,0);
+        if (received > 0 && memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
+          ack_received = 1;
         }
       }
+      close(s);
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
 
