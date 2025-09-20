@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
       printf("Received=%lu KB, ",kb_received);
       double mbits_received = (total_bytes_received * 8.0)/1000000.0;
       double bandwidth_mbps = mbits_received/elapsed_time;
-      printf("Rate=%.3f Mbps\n",bandwidth_mbps);
+      printf("Rate=%.3f Mbps, in \n",bandwidth_mbps);
   }
 
     // CLIENT MODE
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
 
       gettimeofday(&now, NULL);
       //actual elapsed
-      double elapsed_time = (now.tv_sec - client_end_time.tv_sec) + (now.tv_usec - client_end_time.tv_usec)/ 1000000.0;
+      double elapsed_time = (now.tv_sec - client_start_time.tv_sec) + (now.tv_usec - client_start_time.tv_usec)/ 1000000.0;
       unsigned long kb_sent = total_bytes_sent/1000;
       double mbits_sent = (total_bytes_sent*8.0)/1000000.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
