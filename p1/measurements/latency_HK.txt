@@ -1,0 +1,3 @@
+--- aqua.hk ping statistics ---
+20 packets transmitted, 18 packets received, 10.0% packet loss
+round-trip min/avg/max/stddev = 229.323/259.115/386.116/41.529 ms

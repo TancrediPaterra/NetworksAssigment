@@ -1,0 +1,3 @@
+--- pizzahut.us ping statistics ---
+20 packets transmitted, 15 packets received, 25.0% packet loss
+round-trip min/avg/max/stddev = 285.479/365.070/577.337/80.725 ms

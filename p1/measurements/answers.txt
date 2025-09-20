@@ -1,0 +1,25 @@
+2)    Predicted throughput: 18.8Mbits/sec
+      Predicted latency: 125.743ms
+      Actual throughput: 18.7 Mbits/sec 
+      Actual latency: 123.213ms
+      Explanation of results:  Results are coherent with the prediction.
+
+3.1)  Predicted throughput: 9.35Mbits/sec
+      Predicted latency: 125.743ms
+      Actual throughput: 9.50 Mbits/sec and 9.82 Mbits/sec
+      Actual latency: 125.725ms
+      Explanation of results: Results are coherent with the prediction, the throughput its equally splitted between the two connections.
+
+3.2)  Predicted throughput: 6.36Mbits/s
+      Predicted latency: 125.743ms
+      Actual throughput: 8.42 Mbits/sec and 6.11 Mbits/sec and 4.88 Mbits/sec
+      Actual latency: 124.874ms
+      Explanation of results: Probably the time used in the iperf its not enough for the protocol to split equally the bandwidth between the two connections. Latency its coherent.
+
+4)    Predicted throughput: 11.9Mbits/sec
+      Predicted latency: 125.743ms and 32,413ms
+      Actual throughput: 10.4 Mbits/sec and 13.5 Mbits/sec
+      Actual latency: 125.539ms and 32.372ms
+      Explanation of results: Probably, the communication between h3-h8 arriving before the other one to the L3 (the common link with minumum bandwidth) can take some more bandwidth (to be noticed that the average throughput its equal to the one predicted). Latency its coherent.
+
+5)    Explanation of results:
