@@ -152,6 +152,6 @@ int main(int argc, char** argv) {
       double mbits_sent = kb_sent/1000*8;
       double bandwidth_mbps = mbits_sent/elapsed_time;
 
-      printf("Sent=%d KB, Rate=%.3f Mbps\n", sent_kb, bandwidth_mbps);
+      printf("Sent=%d KB, Rate=%.3f Mbps\n", kb_sent, bandwidth_mbps);
     }
 }
