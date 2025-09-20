@@ -32,9 +32,11 @@ int main(int argc, char** argv) {
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
   s = socket(PF_INET, SOCK_STREAM, 0);
+  printf("Program started\n");
 
     // SERVER MODE
     if (strcmp(argv[1],"-s")==0) {
+      printf("Server started\n");
 
       // Parsing and checking arguments
       mode = 's';
@@ -60,7 +62,7 @@ int main(int argc, char** argv) {
       bind(s, serverAddrInfo->ai_addr, serverAddrInfo->ai_addrlen);
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
-      printf("connection accepted");
+      printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
       int kb_received = 0;
       char *buff;
@@ -75,7 +77,7 @@ int main(int argc, char** argv) {
       }
       server_end_time = time(NULL);
       send(new_s, ack_chunk, CHUNK_SIZE, 0);
-      printf("ACK send");
+      printf("ACK send\n");
       recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close first
       close(new_s);
 
@@ -84,7 +86,7 @@ int main(int argc, char** argv) {
       int mb_received = kb_received/1000;
       double bandwidth_mbps = mb_received/elapsed_time;
       //TODO format with 3 decimal points
-      printf("Rate=%f Mbps",bandwidth_mbps );
+      printf("Rate=%f Mbps\n",bandwidth_mbps );
   }
 
     // CLIENT MODE
@@ -133,6 +135,6 @@ int main(int argc, char** argv) {
       }
       time_t elapsed_time = client_start_time - time(NULL);
 
-      printf("Sent=%d KB, Rate=%ld Mbps", sent_kb, sent_kb*1000/elapsed_time);
+      printf("Sent=%d KB, Rate=%ld Mbps\n", sent_kb, sent_kb*1000/elapsed_time);
     }
 }
