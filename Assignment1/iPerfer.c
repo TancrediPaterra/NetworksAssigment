@@ -37,7 +37,6 @@ int main(int argc, char** argv) {
       printf("Server started\n");
 
       // Parsing and checking arguments
-      mode = 's';
       if (argc != 4 || strcmp(argv[2],"-p")!=0) {
         printf("Error: missing or extra arguments\n");
         exit(1);
@@ -91,7 +90,6 @@ int main(int argc, char** argv) {
 
     // CLIENT MODE
     else if (strcmp(argv[1],"-c")==0) {
-      mode = 'c';
       if (argc != 8 || strcmp(argv[2],"-h")!=0 || strcmp(argv[4],"-p")!=0 || strcmp(argv[6],"-t")!=0) {
         printf("Error: missing or extra arguments\n");
         exit(1);
