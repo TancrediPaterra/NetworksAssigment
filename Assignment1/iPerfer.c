@@ -61,9 +61,9 @@ int main(int argc, char** argv) {
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
       server_start_time = time(NULL);
-      printf("connection accepted\n");
+      // printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
-      int total_bytes_received = 0;
+      unsigned long total_bytes_received = 0;
       char buff[CHUNK_SIZE];
 
 
@@ -83,11 +83,11 @@ int main(int argc, char** argv) {
       recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close
       close(new_s);
       server_end_time = time(NULL);
-      int kb_received = total_bytes_received/1000;
-      int mb_received = kb_received/1000;
+      unsigned long kb_received = total_bytes_received/1000;
+      unsigned long mb_received = kb_received/1000;
 
       double elapsed_time = difftime(server_end_time, server_start_time);
-      printf("Received=%d KB, ",kb_received);
+      printf("Received=%lu KB, ",kb_received);
       double mbits_received = mb_received * 8.0; // bits / second / 1e6
       double bandwidth_mbps = mbits_received/elapsed_time;
       printf("Rate=%.3f Mbps\n",bandwidth_mbps);
@@ -137,11 +137,11 @@ int main(int argc, char** argv) {
       close(s);
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
-      int kb_sent = total_bytes_sent/1000;
-      int mb_sent = kb_sent/1000;
+      unsigned long kb_sent = total_bytes_sent/1000;
+      unsigned long mb_sent = kb_sent/1000;
       double mbits_sent = mb_sent*8.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
 
-      printf("Sent=%d KB, Rate=%.3f Mbps\n", kb_sent, bandwidth_mbps);
+      printf("Sent=%lu KB, Rate=%.3f Mbps\n", kb_sent, bandwidth_mbps);
     }
 }
