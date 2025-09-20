@@ -84,11 +84,10 @@ int main(int argc, char** argv) {
       close(new_s);
       server_end_time = time(NULL);
       unsigned long kb_received = total_bytes_received/1000;
-      unsigned long mb_received = kb_received/1000;
 
       double elapsed_time = difftime(server_end_time, server_start_time);
       printf("Received=%lu KB, ",kb_received);
-      double mbits_received = mb_received * 8.0; // bits / second / 1e6
+      double mbits_received = (total_bytes_received * 8.0)/1000000.0;
       double bandwidth_mbps = mbits_received/elapsed_time;
       printf("Rate=%.3f Mbps\n",bandwidth_mbps);
   }
@@ -138,8 +137,7 @@ int main(int argc, char** argv) {
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
       unsigned long kb_sent = total_bytes_sent/1000;
-      unsigned long mb_sent = kb_sent/1000;
-      double mbits_sent = mb_sent*8.0;
+      double mbits_sent = (total_bytes_sent*8.0)/1000000.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
 
       printf("Sent=%lu KB, Rate=%.3f Mbps\n", kb_sent, bandwidth_mbps);
