@@ -30,11 +30,11 @@ int main(int argc, char** argv) {
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
   s = socket(PF_INET, SOCK_STREAM, 0);
-  printf("Program started\n");
+
 
     // SERVER MODE
     if (strcmp(argv[1],"-s")==0) {
-      printf("Server started\n");
+
 
       // Parsing and checking arguments
       if (argc != 4 || strcmp(argv[2],"-p")!=0) {
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
           break; //FIN message
         }
-        printf("Received 1 chunk\n");
+
         kb_received++;
       }
       server_end_time = time(NULL);
@@ -117,10 +117,8 @@ int main(int argc, char** argv) {
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
 
-      printf("Client started sending\n");
       int sent_kb=0;
       while(client_end_time > time(NULL)){
-        printf("Client send one chunk\n");
         int bytes_sent = send(s,send_chunk,CHUNK_SIZE,0);
         if (bytes_sent > 0) {
           sent_kb++;
