@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
   struct addrinfo hints, *serverAddrInfo;
 
 
-  char close_chunk[CHUNK_SIZE];  // CHUNK_SIZE = 1000
+  char close_chunk[CHUNK_SIZE];
   char ack_chunk[CHUNK_SIZE];
   memset(close_chunk, 9, CHUNK_SIZE);
   memset(ack_chunk, 1, CHUNK_SIZE);
@@ -61,35 +61,33 @@ int main(int argc, char** argv) {
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
       server_start_time = time(NULL);
-      printf("connection accepted\n");
+      // printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
-      int kb_received = 0;
+      int bytes_received = 0;
       char buff[CHUNK_SIZE];
 
 
       while(1){
-        int received = recv(new_s, buff,CHUNK_SIZE, 0 );
-        if (received==0) break; //connection closed
+        int bytes_received += recv(new_s, buff,CHUNK_SIZE, 0 );
+        if (bytes_received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
           break; //FIN message
-        }
-        else{
-          kb_received++;
         }
       }
 
       send(new_s, ack_chunk, CHUNK_SIZE, 0);
-      printf("ACK send\n");
-      recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close first
+      // printf("ACK send\n");
+      recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close
       close(new_s);
       server_end_time = time(NULL);
+      int kb_received = bytes_received/1000;
+      int mb_received = kb_received/1000;
 
       double elapsed_time = difftime(server_end_time, server_start_time);
       printf("Received=%d KB, ",kb_received);
-      double mbits_received = kb_received/1000*8;
+      double mbps = (mb_received * 8.0) / elapsed_time; // bits / second / 1e6
       double bandwidth_mbps = mbits_received/elapsed_time;
       printf("Rate=%.3f Mbps\n",bandwidth_mbps);
-      //c'è un errore tra le due misurazioni
   }
 
     // CLIENT MODE
@@ -123,33 +121,30 @@ int main(int argc, char** argv) {
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
 
-      int kb_sent=0;
+      int bytes_sent=0;
       while(client_end_time > time(NULL)){
-        int bytes_sent = send(s,send_chunk,CHUNK_SIZE,0);
-        if (bytes_sent > 0) {
-          kb_sent++;
-        }
-        else break;
+        int bytes_sent += send(s,send_chunk,CHUNK_SIZE,0);
       }
 
       // Send close chunk to signal end of transmission
       send(s, close_chunk, CHUNK_SIZE, 0);
+      kb_sent++;
 
       char buff[CHUNK_SIZE];
       int ack_received = 0;
       while(!ack_received){
         int received = recv(s,buff,CHUNK_SIZE,0);
-        printf("Messaggio ricevuto da client\n");
         if (received > 0 && memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
-          //c'è un errore nella comparazione
           ack_received = 1;
-          printf("ACK received\n");
+          // printf("ACK received\n");
         }
       }
       close(s);
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
-      double mbits_sent = kb_sent/1000*8;
+      int kb_sent = bytes_sent/1000;
+      int mb_sent = kb_sent/1000;
+      double mbits_sent = mb_sent*8.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
 
       printf("Sent=%d KB, Rate=%.3f Mbps\n", kb_sent, bandwidth_mbps);
