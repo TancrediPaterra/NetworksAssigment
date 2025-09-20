@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
         int bytes_received =  recv(new_s, buff,CHUNK_SIZE, 0 );
         if (bytes_received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
-          printf("Close chunk sent");
+          // printf("Close chunk sent");
           break; //FIN message
         }
         total_bytes_received += bytes_received;
@@ -80,13 +80,14 @@ int main(int argc, char** argv) {
 
       char ack = 'A';
       send(new_s, &ack, 1, 0);
-      printf("ACK send\n");
+      // printf("ACK send\n");
       recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close
       close(new_s);
       gettimeofday(&server_end_time, NULL);
       unsigned long kb_received = total_bytes_received/1000;
 
-      double elapsed_time =(server_end_time.tv_sec - server_start_time.tv_sec) + (server_end_time.tv_usec - server_start_time.tv_usec);
+      double elapsed_time = (server_end_time.tv_sec - server_start_time.tv_sec) + (server_end_time.tv_usec - server_start_time.tv_usec)/ 1000000.0;
+
       printf("Received=%lu KB, ",kb_received);
       double mbits_received = (total_bytes_received * 8.0)/1000000.0;
       double bandwidth_mbps = mbits_received/elapsed_time;
@@ -143,7 +144,7 @@ int main(int argc, char** argv) {
 
       gettimeofday(&now, NULL);
       //actual elapsed
-      double elapsed_time = (client_end_time.tv_sec - now.tv_sec) + (client_end_time.tv_usec - now.tv_usec);
+      double elapsed_time = (now.tv_sec - client_end_time.tv_sec) + (now.tv_usec - client_end_time.tv_usec)/ 1000000.0;
       unsigned long kb_sent = total_bytes_sent/1000;
       double mbits_sent = (total_bytes_sent*8.0)/1000000.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
