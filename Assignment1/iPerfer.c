@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 
 
       while(1){
-        int bytes_received += recv(new_s, buff,CHUNK_SIZE, 0 );
+        bytes_received += recv(new_s, buff,CHUNK_SIZE, 0 );
         if (bytes_received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
           break; //FIN message
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 
       double elapsed_time = difftime(server_end_time, server_start_time);
       printf("Received=%d KB, ",kb_received);
-      double mbps = (mb_received * 8.0) / elapsed_time; // bits / second / 1e6
+      double mbits_received = mb_received * 8.0; // bits / second / 1e6
       double bandwidth_mbps = mbits_received/elapsed_time;
       printf("Rate=%.3f Mbps\n",bandwidth_mbps);
   }
@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 
       int bytes_sent=0;
       while(client_end_time > time(NULL)){
-        int bytes_sent += send(s,send_chunk,CHUNK_SIZE,0);
+        bytes_sent += send(s,send_chunk,CHUNK_SIZE,0);
       }
 
       // Send close chunk to signal end of transmission
