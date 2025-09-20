@@ -1,3 +1,0 @@
---- alibaba.cn ping statistics ---
-20 packets transmitted, 18 packets received, 10.0% packet loss
-round-trip min/avg/max/stddev = 82.449/111.784/175.106/28.079 ms

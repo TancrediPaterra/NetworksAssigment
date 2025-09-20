@@ -1,2 +1,0 @@
-Interval       		Transfer     	Bandwidth
-0.0000-25.3783 sec  	31.4 MBytes  	10.4 Mbits/sec
