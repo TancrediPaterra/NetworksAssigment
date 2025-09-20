@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
       printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
       int kb_received = 0;
-      char *buff;
+      char buff[CHUNK_SIZE];
       server_start_time = time(NULL);
 
       while(1){
@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
         }
       }
 
-      char* buff;
+      char buff[CHUNK_SIZE];
       while(1){
         recv(s,buff,CHUNK_SIZE,0);
         if (memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){

@@ -3,7 +3,7 @@ all: iPerfer
 
 SOURCES = iPerfer.c
 iPerfer: $(SOURCES)
-	$(CXX) $(SOURCES) -o iPerfer
+	$(CXX) -g -Wall -fsanitize=address $(SOURCES) -o iPerfer
 
 clean:
 	rm -rf iPerfer *.dSYM
