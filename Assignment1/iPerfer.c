@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
           break; //FIN message
         }
-        total_bytes_received += bytes_received
+        total_bytes_received += bytes_received;
       }
 
       send(new_s, ack_chunk, CHUNK_SIZE, 0);
@@ -142,7 +142,7 @@ int main(int argc, char** argv) {
       close(s);
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
-      int kb_sent = bytes_sent/1000;
+      int kb_sent = total_bytes_sent/1000;
       int mb_sent = kb_sent/1000;
       double mbits_sent = mb_sent*8.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
