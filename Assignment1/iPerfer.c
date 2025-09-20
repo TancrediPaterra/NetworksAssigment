@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
 
       // Send close chunk to signal end of transmission
       send(s, close_chunk, CHUNK_SIZE, 0);
-      kb_sent++;
+      bytes_sent++;
 
       char buff[CHUNK_SIZE];
       int ack_received = 0;
