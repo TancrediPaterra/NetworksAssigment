@@ -5,7 +5,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <time.h>
+#include <sys/time.h>
+
 
 #define CHUNK_SIZE 1000
 
@@ -50,7 +51,7 @@ int main(int argc, char** argv) {
       // Bind, Listen and Accept
 
       // Allow reuse of the port number for testing
-      time_t server_start_time, server_end_time;
+      struct timeval server_start_time, server_end_time;
       int optval = 1;
       setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
@@ -60,7 +61,7 @@ int main(int argc, char** argv) {
       freeaddrinfo(serverAddrInfo);
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
-      server_start_time = time(NULL);
+      gettimeofday(&server_start_time, NULL);
       // printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
       unsigned long total_bytes_received = 0;
@@ -82,10 +83,10 @@ int main(int argc, char** argv) {
       printf("ACK send\n");
       recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close
       close(new_s);
-      server_end_time = time(NULL);
+      gettimeofday(&server_end_time, NULL);
       unsigned long kb_received = total_bytes_received/1000;
 
-      double elapsed_time = difftime(server_end_time, server_start_time);
+      double elapsed_time =(server_end_time.tv_sec - server_start_time.tv_sec) + (server_end_time.tv_usec - server_start_time.tv_usec);
       printf("Received=%lu KB, ",kb_received);
       double mbits_received = (total_bytes_received * 8.0)/1000000.0;
       double bandwidth_mbps = mbits_received/elapsed_time;
@@ -110,23 +111,28 @@ int main(int argc, char** argv) {
         exit(1);
       }
 
-      // Connect
-      hints.ai_flags = 0;
-      getaddrinfo(server_hostname, server_port, &hints, &serverAddrInfo);
-      connect(s, serverAddrInfo->ai_addr, serverAddrInfo-> ai_addrlen);
-      time_t client_start_time = time(NULL);
-      freeaddrinfo(serverAddrInfo);
 
-      //timeout
-
-      time_t client_end_time = client_start_time + t;
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
 
+      // Connect
+      hints.ai_flags = 0;
+      getaddrinfo(server_hostname, server_port, &hints, &serverAddrInfo);
+      struct timeval client_start_time, client_end_time, now;
+      connect(s, serverAddrInfo->ai_addr, serverAddrInfo-> ai_addrlen);
+      gettimeofday(&client_start_time, NULL);
+      client_end_time = client_start_time;
+      client_end_time.tv_sec += t;
       int total_bytes_sent=0;
-      while(client_end_time > time(NULL)){
-        total_bytes_sent += send(s,send_chunk,CHUNK_SIZE,0);
+      for (;;) {
+        gettimeofday(&now, NULL);
+        if (now.tv_sec > client_end_time.tv_sec ||
+            (now.tv_sec == client_end_time.tv_sec && now.tv_usec >= client_end_time.tv_usec)) {
+          break;
+        }
+        total_bytes_sent += send(s, send_chunk, CHUNK_SIZE, 0);
       }
+      freeaddrinfo(serverAddrInfo);
 
       // Send close chunk to signal end of transmission
       send(s, close_chunk, CHUNK_SIZE, 0);
@@ -134,8 +140,10 @@ int main(int argc, char** argv) {
       char ack;
       recv(s,&ack,1,0);
       close(s);
-      time_t client_final_time = time(NULL);
-      time_t elapsed_time = client_final_time - client_start_time;
+
+      gettimeofday(&now, NULL);
+      //actual elapsed
+      double elapsed_time = (client_end_time.tv_sec - now.tv_sec) + (client_end_time.tv_usec - now.tv_usec);
       unsigned long kb_sent = total_bytes_sent/1000;
       double mbits_sent = (total_bytes_sent*8.0)/1000000.0;
       double bandwidth_mbps = mbits_sent/elapsed_time;
