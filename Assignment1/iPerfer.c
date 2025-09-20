@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 
       double elapsed_time = difftime(server_end_time, server_start_time);
       printf("Received=%d KB, ",kb_received);
-      int mb_received = kb_received/1000;
+      double mb_received = kb_received/1000;
       double bandwidth_mbps = mb_received/elapsed_time;
       //TODO format with 3 decimal points
       printf("Rate=%.3f Mbps\n",bandwidth_mbps );
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
       while(client_end_time > time(NULL)){
         int bytes_sent = send(s,send_chunk,CHUNK_SIZE,0);
         if (bytes_sent > 0) {
-          sent_kb+=100;
+          sent_kb++;
         }
       }
 
@@ -138,14 +138,15 @@ int main(int argc, char** argv) {
         int received = recv(s,buff,CHUNK_SIZE,0);
         if (received > 0 && memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
           ack_received = 1;
-          printf("ACK received");
+          printf("ACK received\n");
         }
       }
       close(s);
       time_t client_final_time = time(NULL);
       time_t elapsed_time = client_final_time - client_start_time;
+      double mb_sent = sent_kb/1000;
+      double bandwidth_mbps = mb_sent/elapsed_time;
 
-      double bandwidth_mbps = (sent_kb/1000) / (elapsed_time);
       printf("Sent=%d KB, Rate=%.3f Mbps\n", sent_kb, bandwidth_mbps);
     }
 }
