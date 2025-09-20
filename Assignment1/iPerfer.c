@@ -7,7 +7,7 @@
 #include <netdb.h>
 #include <time.h>
 
-#define CHUNK_SIZE 100000
+#define CHUNK_SIZE 1000
 
 // Usage:
 // ./iPerfer -s -p <listen_port>
@@ -60,34 +60,36 @@ int main(int argc, char** argv) {
       freeaddrinfo(serverAddrInfo);
       listen(s, 1);
       new_s = accept(s, (struct sockaddr *)&their_addr, &addr_len);
+      server_start_time = time(NULL);
       printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
       int kb_received = 0;
       char buff[CHUNK_SIZE];
-      server_start_time = time(NULL);
+
 
       while(1){
         int received = recv(new_s, buff,CHUNK_SIZE, 0 );
         if (received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
-          printf("Close chunk received\n");
           break; //FIN message
         }
-
-        kb_received++;
+        else{
+          kb_received++;
+        }
       }
-      server_end_time = time(NULL);
+
       send(new_s, ack_chunk, CHUNK_SIZE, 0);
       printf("ACK send\n");
-      // recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close first
+      recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close first
       close(new_s);
+      server_end_time = time(NULL);
 
       double elapsed_time = difftime(server_end_time, server_start_time);
       printf("Received=%d KB, ",kb_received);
       double mb_received = kb_received/1000;
       double bandwidth_mbps = mb_received/elapsed_time;
-      //TODO format with 3 decimal points
-      printf("Rate=%.3f Mbps\n",bandwidth_mbps );
+      printf("Rate=%.3f Mbps\n",bandwidth_mbps);
+      //c'è un errore tra le due misurazioni
   }
 
     // CLIENT MODE
@@ -112,10 +114,11 @@ int main(int argc, char** argv) {
       hints.ai_flags = 0;
       getaddrinfo(server_hostname, server_port, &hints, &serverAddrInfo);
       connect(s, serverAddrInfo->ai_addr, serverAddrInfo-> ai_addrlen);
+      time_t client_start_time = time(NULL);
       freeaddrinfo(serverAddrInfo);
 
       //timeout
-      time_t client_start_time = time(NULL);
+
       time_t client_end_time = client_start_time + t;
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
@@ -131,7 +134,6 @@ int main(int argc, char** argv) {
 
       // Send close chunk to signal end of transmission
       send(s, close_chunk, CHUNK_SIZE, 0);
-      printf("Close chunk sent\n");
 
       char buff[CHUNK_SIZE];
       int ack_received = 0;
@@ -139,6 +141,7 @@ int main(int argc, char** argv) {
         int received = recv(s,buff,CHUNK_SIZE,0);
         printf("Messaggio ricevuto da client\n");
         if (received > 0 && memcmp(buff, ack_chunk, CHUNK_SIZE) == 0){
+          //c'è un errore nella comparazione
           ack_received = 1;
           printf("ACK received\n");
         }
