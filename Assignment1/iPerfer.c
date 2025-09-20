@@ -63,16 +63,17 @@ int main(int argc, char** argv) {
       server_start_time = time(NULL);
       // printf("connection accepted\n");
       close(s); //just one connection, we don't need to listen for others
-      int bytes_received = 0;
+      int total_bytes_received = 0;
       char buff[CHUNK_SIZE];
 
 
       while(1){
-        bytes_received += recv(new_s, buff,CHUNK_SIZE, 0 );
+        int bytes_received =  recv(new_s, buff,CHUNK_SIZE, 0 );
         if (bytes_received==0) break; //connection closed
         if (memcmp(buff, close_chunk, CHUNK_SIZE) == 0){
           break; //FIN message
         }
+        total_bytes_received += bytes_received
       }
 
       send(new_s, ack_chunk, CHUNK_SIZE, 0);
@@ -80,7 +81,7 @@ int main(int argc, char** argv) {
       recv(new_s, NULL, CHUNK_SIZE, 0); //waiting the client to close
       close(new_s);
       server_end_time = time(NULL);
-      int kb_received = bytes_received/1000;
+      int kb_received = total_bytes_received/1000;
       int mb_received = kb_received/1000;
 
       double elapsed_time = difftime(server_end_time, server_start_time);
@@ -121,14 +122,13 @@ int main(int argc, char** argv) {
       char send_chunk[CHUNK_SIZE];
       memset(send_chunk, 0, CHUNK_SIZE);
 
-      int bytes_sent=0;
+      int total_bytes_sent=0;
       while(client_end_time > time(NULL)){
-        bytes_sent += send(s,send_chunk,CHUNK_SIZE,0);
+        total_bytes_sent += send(s,send_chunk,CHUNK_SIZE,0);
       }
 
       // Send close chunk to signal end of transmission
       send(s, close_chunk, CHUNK_SIZE, 0);
-      bytes_sent++;
 
       char buff[CHUNK_SIZE];
       int ack_received = 0;
